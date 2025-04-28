@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %} Ro'yxatdan o'tish {% endblock %}
+
+{% block background_image %}
+    background-image: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/1d06cfed-504d-48b2-995b-fc4bf05b040e/denl9w7-8e65c147-c186-4226-847e-13b83630d720.jpg/v1/fill/w_1131,h_707,q_70,strp/75436_by_rain1084_denl9w7-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9ODAwIiwicGF0aCI6IlwvZlwvMWQwNmNmZWQtNTA0ZC00OGIyLTk5NWItZmM0YmYwNWIwNDBlXC9kZW5sOXc3LThlNjVjMTQ3LWMxODYtNDIyNi04NDdlLTEzYjgzNjMwZDcyMC5qcGciLCJ3aWR0aCI6Ijw9MTI4MCJ9XV0sImF1ZCI6WyJ1cm46c2VydmljZTppbWFnZS5vcGVyYXRpb25zIl19.QyvrGDfHzm6wnSYmknqE20tDiwz2av7vrrnXBtuFtn4');
+{% endblock %}
+
+{% block content %}
+     <nav class="shadow mb-5 navbar navbar-expand-lg text-primary-emphasis">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img style="width: 40px; height: auto;" src="../../media/images/icon/main_logo.png" alt="ToDo">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Barcha Testlar</a>
+            </li>
+          </ul>
+
+          <button id="themeToggle" class="btn btn-dark">
+              <i id="themeIcon" class="fa-solid fa-moon"></i>
+          </button>
+
+        </div>
+      </div>
+    </nav>
+
+     <div style="opacity: 90%;" class="container mt-5">
+      <div class="card">
+        <div class="card-header">
+          <h4>Ro'yxatdan o'tish</h4>
+        </div>
+
+        <div class="card-body">
+            <form action="{% url 'signup' %}" method="post">
+            {% csrf_token %}
+                {% for field in form %}
+                  <p>
+                    {{ field.label_tag }}
+                        <div>{{ field }}</div>
+                    {% if field.help_text %}
+                        <small style="color: grey">{{ field.help_text | safe }}</small>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p style="color: red">{{ error }}</p>
+                    {% endfor %}
+                  </p>
+                {% endfor %}
+
+                <button class="btn btn-primary mb-20 rounded-pill" type="submit">Yuborish</button>
+            </form>
+        </div>
+
+      </div>
+         <a class="btn btn-warning mt-3 ms-3 rounded-start-pill" href="../login/">
+            <i class="bi bi-backspace"></i> Ortga
+         </a>
+    </div>
+{% endblock %}

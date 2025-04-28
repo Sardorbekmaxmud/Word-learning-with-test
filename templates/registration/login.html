@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %} Tizimga kirish {% endblock %}
+
+{% block background_image %}
+    background-image: url('https://i.pinimg.com/originals/b4/23/7b/b4237bf7af83a3e5d58a78901a7c445c.jpg');
+{% endblock %}
+
+
+{% block content %}
+    <nav class="shadow mb-5 navbar navbar-expand-lg text-primary-emphasis">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">
+            <img style="width: 40px; height: auto;" src="../../media/images/icon/main_logo.png" alt="ToDo">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Barcha Testlar</a>
+            </li>
+          </ul>
+
+          <button id="themeToggle" class="btn btn-dark">
+              <i id="themeIcon" class="fa-solid fa-moon"></i>
+          </button>
+
+        </div>
+      </div>
+    </nav>
+
+    <div style="opacity: 90%;" class="container mt-5">
+      <div class="card">
+        <div class="card-header">
+          <h4>Tizimga kirish</h4>
+        </div>
+        <div class="card-body">
+          <form action="{% url 'login' %}" method="post">
+            {% csrf_token %}
+
+            <label for="validationCustomUsername" class="form-label">Foydalanuvchi nomi</label>
+            <div class="input-group has-validation">
+              <input name="username" type="text" class="form-control" id="validationCustomUsername" aria-describedby="inputGroupPrepend" required>
+              <div class="invalid-feedback">
+                Iltimos, foydalanuvchi nomini tanlang!
+              </div>
+            </div>
+
+            <label for="inputPassword5" class="form-label">Parol</label>
+            <input name="password" type="password" id="inputPassword5" class="form-control" aria-describedby="passwordHelpBlock" required>
+            <div class="invalid-feedback">
+                Parolingizni to'gri kiriting!
+            </div>
+
+            <button class="btn btn-success mt-3 me-2 rounded-pill" type="submit">Tizimga kirish</button>
+
+            <a class="btn btn-primary mt-3 rounded-pill" href="{% url 'signup' %}">Ro'yxatdan o'tish</a>
+          </form>
+
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
