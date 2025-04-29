@@ -94,6 +94,42 @@
 
   </head>
   <body class="bg-primary-subtle text-primary-emphasis;">
+      <nav class="shadow mb-5 navbar navbar-expand-lg text-primary-emphasis">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'index' %}">
+            <img style="width: 40px; height: auto;" src="../../media/images/icon/main_logo.png" alt="Test">
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="{% url 'index' %}">Barcha Testlar</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="#">Test Qo'shish</a>
+            </li>
+          </ul>
+
+          <button id="themeToggle" class="btn btn-dark" data-bs-toggle="tooltip" data-bs-placement="left" title="Rejimlar">
+              <i id="themeIcon" class="fa-solid fa-moon"></i>
+          </button>
+
+          <a href="{% url 'profile' %}" class="btn btn-primary ms-1" data-bs-toggle="tooltip" data-bs-placement="left" title="Shaxsiy profile">
+            <i class="bi bi-person-circle"></i>
+          </a>
+
+          <a href="{% url 'logout' %}" class="btn btn-danger ms-1 rounded-end-circle" data-bs-toggle="tooltip" data-bs-placement="left" title="Tizimdan chiqish">
+            <i class="bi bi-box-arrow-right"></i>
+          </a>
+
+
+        </div>
+      </div>
+    </nav>
 
       {% block content %}
 

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}
+   Shaxsiy profile
+{% endblock title %}
+
+{% block background_image %}
+    background-image: url('');
+{% endblock %}
+
+{% block content %}
+    <div style="opacity: 85%" class="container mt-5">
+        <h2 style="text-align:center; font-size: 30px;" class="form-control fw-bold mb-3">{{ user.username }}</h2>
+
+        <!-- Foydalanuvchi haqida ma'lumot -->
+        <div class="card p-3 mb-4">
+            <h5>Shaxsiy ma'lumotlaringiz:</h5>
+            <p><strong>Foydalanuchi nomi:</strong> <i>{{ user.username }}</i></p>
+<!--            <p><strong>Yaratilgan sanasi:</strong> <i>{{  }}</i></p>-->
+<!--            <p><strong>Oxirgi o'zgarish sanasi:</strong> <i>{{  }}</i></p>-->
+        </div>
+    </div>
+
+
+{% endblock content %}

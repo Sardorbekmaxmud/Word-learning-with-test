@@ -24,7 +24,7 @@ class Test(models.Model):
     category = models.ForeignKey(Category, on_delete=models.CASCADE)
     title = models.CharField(max_length=200, null=False, blank=False)
     pass_percentage = models.PositiveBigIntegerField()
-    created_time = models.DateTimeField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
@@ -53,6 +53,7 @@ class Questions(models.Model):
     d = models.CharField(max_length=150, null=False, blank=False)
     true_option = models.CharField(max_length=2, choices=STATUS_CHOICES, null=False, blank=False,
                                    help_text="To'g'ri variantni tanlang!")
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.title
