@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Test, Questions
+from .models import Category, Test, Questions, CheckTest, CheckQuestion
 
 
 # Register your models here.
@@ -33,3 +33,6 @@ class QuestionsAdmin(admin.ModelAdmin):
     search_fields = ('test__title', 'title',)
     ordering = ('created_at', 'true_option')
     readonly_fields = ['created_at']
+
+
+admin.site.register([CheckTest, CheckQuestion])

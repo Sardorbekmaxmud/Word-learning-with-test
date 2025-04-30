@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
 {% block title %} Asosiy sahifa {% endblock %}
 
@@ -8,6 +8,7 @@
 
 
 {% block content %}
+ <div style="opacity: 85%" class="container mt-5">
     <div class="card mt-5">
         <div class="card-header">
             <h3>Siz uchun barcha testlar</h3>
@@ -18,14 +19,15 @@
                     <li class="list-group-item d-flex justify-content-between align-items-start">
                         <div class="ms-2 me-auto">
                             <div class="fw-bold">{{test.title}}</div>
-                            {{test.category.name}} | <a class="" href="{% url 'detail' test.id %}">Testni yechish</a>
+                            {{test.category.name}} | <a style="" class="" href="{% url 'detail' test.id %}">Testni yechish</a>
                         </div>
-                        <p>{{test.created_at|date:'d.m.Y H:i'}}</p>
-                        <span class="badge bg-primary rounded-pill ms-2">Testlar: {{test.questions.all.count}} ta</span>
+                        <p style="font-size: 12px;">{{test.created_at|date:'d.m.Y H:i'}}</p>
+<!--                        <span class="badge bg-primary rounded-pill ms-2">Testlar: {{test.questions.all.count}} ta</span>-->
                     </li>
                 {% endfor %}
               </ol>
         </div>
     </div>
+ </div>
 
 {% endblock %}

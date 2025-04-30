@@ -7,9 +7,9 @@ from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 
 from .forms import CustomUserCreationForm
-from .models import Test, Questions
+from .models import Test, Questions, CheckQuestion, CheckTest
 
-User  =get_user_model()
+User = get_user_model()
 
 
 # Create your views here.
@@ -38,13 +38,39 @@ def index(request):
 
 @login_required_decorator
 def detail(request, test_id):
-    test = get_object_or_404(Test, pk=test_id)
-    questions = Questions.objects.filter(test=test)
-    return render(request=request, template_name='test/detail.html', context={'test': test, 'questions': questions})
+    queryset = get_object_or_404(Test, pk=test_id)
+    total_questions = len(Questions.objects.filter(test=queryset))
+    return render(request=request, template_name='test/detail.html',
+                  context={'test': queryset, 'total_questions': total_questions})
+
+
+@login_required_decorator
+def test(request, test_id):
+    queryset = get_object_or_404(Test, pk=test_id)
+    questions = Questions.objects.filter(test=queryset)
+
+    if request.method == "POST":
+        check_test = CheckTest.objects.create(solver=request.user, test=queryset)
+        for question in questions:
+            given_answer = request.POST[str(question.id)]
+
+            CheckQuestion.objects.create(test=check_test,
+                                         question=question,
+                                         given_answer=given_answer,
+                                         true_answer=question.true_option)
+        check_test.save()
+
+        return redirect('test', test_id)
+
+    context = {
+        'test': queryset,
+        'questions': questions,
+    }
+
+    return render(request=request, template_name='test/test.html', context=context)
 
 
 @login_required_decorator
 def profile(request):
     user = User.objects.filter(username=request.user).first()
-    print(user.username, user.email)
     return render(request=request, template_name='profile/profile.html', context={'user': user})

@@ -1,26 +1,27 @@
 {% extends "base.html" %}
-{% block title %}
-   Testni Boshlash
-{% endblock title %}
+
+{% block title %} Testni boshlash {% endblock %}
 
 {% block background_image %}
-    background-image: url('');
+    background-image: url('https://i.pinimg.com/originals/b4/23/7b/b4237bf7af83a3e5d58a78901a7c445c.jpg');
 {% endblock %}
 
 {% block content %}
+ <div style="opacity: 85%" class="container mt-5">
     <div class="card mt-5">
         <div class="card-header">
             <h3>Testni Boshlash - {{test.title}}</h3>
         </div>
         <div class="card-body">
            <p><b>Toifa</b>: {{test.category}}</p>
-           <p><b>Savollar soni:</b> {{questions.all.count}} ta</p>
+           <p><b>Savollar soni:</b> {{total_questions}} ta</p>
            <p><b>O'tish foizi:</b> {{test.pass_percentage}}<i class="bi bi-percent"></i></p>
            <p><b>Avtor:</b> <a href="">@{{test.author.username}}</a></p>
 
-           <a href="#" class="btn btn-primary">Testni boshlash</a>
+           <a href="{% url 'test' test.id %}" class="btn btn-primary">Testni boshlash</a>
            <a href="{% url 'index' %}" class="btn btn-warning">Ortga</a>
         </div>
     </div>
+ </div>
 
 {% endblock content %}
