@@ -60,7 +60,7 @@ def test(request, test_id):
                                          true_answer=question.true_option)
         check_test.save()
 
-        return redirect('test', test_id)
+        return redirect('checktest', check_test.id)
 
     context = {
         'test': queryset,
@@ -68,6 +68,19 @@ def test(request, test_id):
     }
 
     return render(request=request, template_name='test/test.html', context=context)
+
+
+@login_required_decorator
+def checktest(request, checktest_id):
+    queryset = get_object_or_404(CheckTest, pk=checktest_id, solver=request.user)
+    checkquestions = CheckQuestion.objects.filter(test=queryset)
+    return render(
+        request=request,
+        template_name='test/checktest.html',
+        context={
+            'checktest': queryset,
+            'checkquestions': checkquestions
+        })
 
 
 @login_required_decorator

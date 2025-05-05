@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %} Testni tekshirish {% endblock %}
+
+{% block background_image %}
+    background-image: url('https://i.pinimg.com/originals/b4/23/7b/b4237bf7af83a3e5d58a78901a7c445c.jpg');
+{% endblock %}
+
+{% block content %}
+    <div style="opacity: 95%" class="container mt-5">
+        <div class="card mt-5">
+            <div class="card-header">
+                <h2 style="text-align: center;"> Test: {{checktest.test.title}} </h2>
+            </div>
+            <div class="card-body">
+                {% if checktest.is_passed %}
+                    <h4 style="text-align: center;">🎉🎊 Siz ushbu testni muvaffaqiyatli yechdingiz! 🎉🎊 </h4>
+                <p style="font-size: 20px; text-align: center;"> Siz testni <b>{{checktest.percentage}} %</b>  ishladingiz. </p>
+                {% else %}
+                    <h4 style="text-align: center;">🥲😞 Siz ushbu testdan o'tolmadingiz. Siz testni <b>{{checktest.percentage}} %</b> topdingiz. 😟😓</h4>
+                    <p style="font-size: 20px; text-align: center;"> Testdan o'tish uchun kamida <b>{{checktest.test.pass_percentage}} %</b> ishlashingiz kerak.</p>
+                {% endif %}
+
+                <hr>
+                {% for q in checkquestions  %}
+                    {% if q.is_true %}
+                        <div class="answer p-2" style="background-color: rgba(88, 211, 71); border-radius: 5px;">
+                            <h5> {{forloop.counter}}. Savol: {{q.question.title}}</h5>
+                            <small style="color: black; text-transform: uppercase;"><strong>Eslatma: {{q.given_answer}} belgilangansiz.</strong></small>
+                            <ol>
+                                <li>A. {{q.question.a}}</li>
+                                <li>B. {{q.question.b}}</li>
+                                <li>C. {{q.question.c}}</li>
+                                <li>D. {{q.question.d}}</li>
+                            </ol>
+                        </div>
+                    {% else %}
+                        <div class="answer p-2" style="background-color: rgba(212, 72, 72); border-radius: 5px;">
+                            <h5> {{forloop.counter}}. {{q.question.title}}</h5>
+                            <small style="color: black; text-transform: uppercase;"><strong>Eslatma: {{q.given_answer}} belgilangan.</strong></small>
+                            <ol>
+                                <li>A. {{q.question.a}}</li>
+                                <li>B. {{q.question.b}}</li>
+                                <li>C. {{q.question.c}}</li>
+                                <li>D. {{q.question.d}}</li>
+                            </ol>
+                        </div>
+                    {% endif %}
+                    <hr>
+                {% endfor %}
+            <a href="/" class="btn btn-warning">Qaytish</a>
+            <a href="#" class="btn btn-secondary">Mening Natijalarim</a>
+            </div>
+        </div>
+        <br><br>
+    </div>
+{% endblock %}

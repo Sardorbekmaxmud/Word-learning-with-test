@@ -35,4 +35,24 @@ class QuestionsAdmin(admin.ModelAdmin):
     readonly_fields = ['created_at']
 
 
-admin.site.register([CheckTest, CheckQuestion])
+class CheckQuestionInline(admin.TabularInline):
+    model = CheckQuestion
+
+
+@admin.register(CheckTest)
+class CheckTestAdmin(admin.ModelAdmin):
+    inlines = [CheckQuestionInline,]
+    list_display = ('solver__username', 'test__title', 'true_answers', 'percentage', 'is_passed', 'date')
+    list_filter = ('solver__username', 'test__title', 'date', 'is_passed')
+    search_fields = ('test__title', 'solver__username',)
+    ordering = ('date',)
+    readonly_fields = ['date']
+
+
+@admin.register(CheckQuestion)
+class CheckQuestionAdmin(admin.ModelAdmin):
+    list_display = ('test', 'question__title', 'given_answer', 'true_answer', 'is_true', 'created_at',)
+    list_filter = ('question__title',)
+    search_fields = ('test__title', 'question__title',)
+    ordering = ('created_at',)
+    readonly_fields = ['created_at']

@@ -75,10 +75,10 @@ class CheckTest(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Ishlangan: {str(self.test.title)}"
+        return f"{str(self.test.title)}"
 
     def __repr__(self):
-        return f"Ishlangan: {str(self.test.title)}"
+        return f"{str(self.test.title)}"
 
 
 class CheckQuestion(models.Model):
@@ -87,6 +87,7 @@ class CheckQuestion(models.Model):
     given_answer = models.CharField(max_length=2)
     true_answer = models.CharField(max_length=2)
     is_true = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return str(self.is_true)
