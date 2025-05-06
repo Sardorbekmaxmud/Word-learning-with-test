@@ -1,3 +1,4 @@
+from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
@@ -6,7 +7,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, TestForm, QuestionForm
 from .models import Test, Questions, CheckQuestion, CheckTest
 
 User = get_user_model()
@@ -32,7 +33,7 @@ def logout_(reqeust):
 
 @login_required_decorator
 def index(request):
-    queryset = Test.objects.all()
+    queryset = Test.objects.filter(author=request.user)
     return render(request=request, template_name='test/index.html', context={'tests': queryset})
 
 
@@ -84,6 +85,57 @@ def checktest(request, checktest_id):
 
 
 @login_required_decorator
-def profile(request):
+def create_test(request):
+    form = TestForm()
+
+    if request.method == "POST":
+        form = TestForm(data=request.POST)
+
+        if form.is_valid():
+            test_id = form.save(request=request)
+            return redirect('create_question', test_id)
+
+    return render(request=request,
+                  template_name='test/create_test.html',
+                  context={'form': form})
+
+
+@login_required_decorator
+def create_question(request, test_id):
+    queryset_test = get_object_or_404(Test, pk=test_id)
+
+    if queryset_test.author == request.user:
+        form = QuestionForm()
+
+        if request.method == "POST":
+            form = QuestionForm(data=request.POST)
+
+            if form.is_valid():
+                form.save(test_id)
+
+                if form.cleaned_data['submit_and_exit']:
+                    return redirect('index')
+                return redirect('create_question', test_id)
+
+        return render(request=request,
+                      template_name='test/create_question.html',
+                      context={'form': form, 'test': queryset_test})
+    else:
+        return HttpResponse("Sizga ruxsat yo'q! Negaki, siz testni egasi emassiz!")
+
+
+@login_required_decorator
+def profile(request, user_id):
     user = User.objects.filter(username=request.user).first()
-    return render(request=request, template_name='profile/profile.html', context={'user': user})
+    check_tests = CheckTest.objects.filter(solver=user_id)
+    number_of_check_tests = check_tests.count()
+    number_of_tests = Test.objects.filter(author=user_id).count()
+
+    context = {
+        'user': user,
+        'number_of_checktests': number_of_check_tests,
+        'number_of_tests': number_of_tests,
+        'solved_tests': check_tests
+    }
+
+    return render(request=request, template_name='user/profile.html', context=context)

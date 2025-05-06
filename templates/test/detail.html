@@ -16,7 +16,7 @@
            <p><b>Toifa</b>: {{test.category}}</p>
            <p><b>Savollar soni:</b> {{total_questions}} ta</p>
            <p><b>O'tish foizi:</b> {{test.pass_percentage}}<i class="bi bi-percent"></i></p>
-           <p><b>Avtor:</b> <a href="">@{{test.author.username}}</a></p>
+           <p><b>Avtor:</b> <a href="{% url 'profile' test.author.id %}">@{{test.author.username}}</a></p>
 
            <a href="{% url 'test' test.id %}" class="btn btn-primary">Testni boshlash</a>
            <a href="{% url 'index' %}" class="btn btn-warning">Ortga</a>

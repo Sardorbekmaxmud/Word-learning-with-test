@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+
+{% block title %} Shaxsiy profile {% endblock %}
+
+{% block background_image %}
+    background-image: url('https://i.pinimg.com/originals/b4/23/7b/b4237bf7af83a3e5d58a78901a7c445c.jpg');
+{% endblock %}
+
+{% block content %}
+    <div style="opacity: 85%" class="container mt-5">
+        <div class="row mt-4">
+        <div class="col-md-4">
+            <div class="card p-2">
+                <center>
+                    <img style="width: 200px; height:200px; border-radius:50%" class="img-rounded m-3" src="../../media/images/icon/main_logo.png" alt="">
+                    {% if user.username %}
+                        <h3>{{user.username}}</h3>
+                    {% else %}
+                        <h3> {{user.get_full_name}} </h3>
+                    {% endif %}
+                </center>
+                <p class="text-muted" style="text-align: center;"> {{user.email}}</p>
+<!--                <p>Bio: {{user.profile.bio}}</p>-->
+                <div class="card p-2">
+                    <h5> Yaratgan testlaringiz: {{number_of_tests}} ta</h5>
+                    <hr>
+                    <h5> Yechgan testlaringiz: {{number_of_checktests}} ta</h5>
+                </div>
+                {% if user == request.user %}
+                    <a class="btn btn-warning mt-2" href="#">Tahrirlash</a>
+                {% endif %}
+
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>Mening Natijalarim</h3>
+                </div>
+                <div class="card-body">
+                    <h4>Sizning testlaringiz</h4>
+                    <ol class="list-group list-group">
+                        {% for test in solved_tests %}
+
+                            <a style="text-decoration: none;" href="{% url 'checktest' test.id %}">
+                                {% if test.is_passed %}
+
+                                    <li style="background-color: rgba(40, 128, 16, 0.499);" class="list-group-item">
+                                        <div class="ms-2 me-auto">
+                                            <div class="fw-bold">
+                                                Nomi: {{test.test.title}}
+                                            </div>
+                                            Turi: {{test.test.category.name}} |
+                                            <b>Sana:</b> {{test.date|date:'d.m.Y H:i'}} |  <b>Foiz:</b> {{test.percentage}} %
+                                        </div>
+                                    </li>
+                                {% else %}
+                                    <li style="background-color: rgba(255, 0, 0, 0.37);" class="list-group-item">
+                                        <div class="ms-2 me-auto">
+                                            <div class="fw-bold">
+                                                Nomi: {{test.test.title}}
+                                            </div>
+                                            Turi: {{test.test.category.name}} |
+                                            <b>Sana:</b> {{test.date|date:'d.m.Y H:i'}} |  <b>Foiz:</b> {{test.percentage}} %
+                                        </div>
+                                    </li>
+                                {% endif %}
+                        {% endfor %}
+                    </ol>
+                      <a href="{% url 'index' %}" class="btn btn-primary mt-2">Barcha Testlar</a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    </div>
+
+{% endblock content %}

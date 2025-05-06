@@ -11,8 +11,11 @@ def check_test(sender, instance, *args, **kwargs):
     try:
         check_test.percentage = check_test.true_answers * 100 // CheckQuestion.objects.filter(test=check_test).count()
 
+        print(check_test.test.pass_percentage, "--test foizi", check_test.percentage, "--user foizi")
         if check_test.test.pass_percentage <= check_test.percentage:
             check_test.is_passed = True
+        else:
+            check_test.is_passed = False
     except Exception as e:
         print("Xatolik: ", e)
 

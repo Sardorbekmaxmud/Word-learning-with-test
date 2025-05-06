@@ -26,6 +26,8 @@ INSTALLED_APPS = [
 
     # third
     "jazzmin",
+    'crispy_forms',
+    'crispy_bootstrap5',
 
     # default
     'django.contrib.admin',
@@ -46,6 +48,9 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
 
 ROOT_URLCONF = 'config.urls'
 
@@ -132,7 +137,7 @@ LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 
 # CSRF_TRUSTED_ORIGINS = os.getenv('DOMAINS', '').split(',')
-CSRF_COOKIE_SECURE = True
+# CSRF_COOKIE_SECURE = True
 
 # LOGGING SETTINGS
 LOGGING = {

@@ -24,6 +24,12 @@
                         <p style="font-size: 12px;">{{test.created_at|date:'d.m.Y H:i'}}</p>
 <!--                        <span class="badge bg-primary rounded-pill ms-2">Testlar: {{test.questions.all.count}} ta</span>-->
                     </li>
+                {% empty %}
+                    <p style="font-size: 18px;">Hozirda testlar yo'q.</p>
+                    <div>
+                        <a href="{% url 'create_test' %}" class="btn btn-success">Test yaratish</a>
+                    </div>
+
                 {% endfor %}
               </ol>
         </div>

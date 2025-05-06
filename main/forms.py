@@ -2,6 +2,8 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
+from .models import Test, Questions
+
 User = get_user_model()
 
 
@@ -44,3 +46,29 @@ class CustomUserCreationForm(UserCreationForm):
             'password1': 'Parol:',
             'password2': 'Parolni takrorlang:',
         }
+
+
+class TestForm(forms.ModelForm):
+    class Meta:
+        model = Test
+        fields = ['category', 'title', 'pass_percentage']
+
+    def save(self, request, commit=True):
+        test = self.instance
+        test.author = request.user
+        super().save(commit)
+        return test.id
+
+
+class QuestionForm(forms.ModelForm):
+    class Meta:
+        model = Questions
+        fields = ['title', 'a', 'b', 'c', 'd', 'true_option']
+
+    submit_and_exit = forms.BooleanField(required=False)
+
+    def save(self, test_id, commit=True):
+        question = self.instance
+        question.test = Test.objects.filter(pk=test_id).first()
+        super().save(commit)
+        return question
