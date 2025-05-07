@@ -10,15 +10,17 @@
  <div style="opacity: 85%" class="container mt-5">
     <div class="card mt-5">
         <div class="card-header">
-            <h3>Testni Boshlash - {{test.title}}</h3>
+            <h3>Nomi: {{test.title}}</h3>
         </div>
         <div class="card-body">
            <p><b>Toifa</b>: {{test.category}}</p>
            <p><b>Savollar soni:</b> {{total_questions}} ta</p>
            <p><b>O'tish foizi:</b> {{test.pass_percentage}}<i class="bi bi-percent"></i></p>
            <p><b>Avtor:</b> <a href="{% url 'profile' test.author.id %}">@{{test.author.username}}</a></p>
+           <p><b>Yaratilgan sana:</b> {{test.created_at|date:'d.m.Y H:i'}}</p>
 
-           <a href="{% url 'test' test.id %}" class="btn btn-primary">Testni boshlash</a>
+
+           <a href="{% url 'test' test.id %}" class="btn btn-primary">Boshlash</a>
            <a href="{% url 'index' %}" class="btn btn-warning">Ortga</a>
         </div>
     </div>

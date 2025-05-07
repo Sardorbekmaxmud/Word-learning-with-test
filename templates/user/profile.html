@@ -13,10 +13,10 @@
             <div class="card p-2">
                 <center>
                     <img style="width: 200px; height:200px; border-radius:50%" class="img-rounded m-3" src="../../media/images/icon/main_logo.png" alt="">
-                    {% if user.username %}
-                        <h3>{{user.username}}</h3>
+                    {% if user.get_full_name %}
+                        <h3>{{user.get_full_name}}</h3>
                     {% else %}
-                        <h3> {{user.get_full_name}} </h3>
+                        <h3> {{user.username}} </h3>
                     {% endif %}
                 </center>
                 <p class="text-muted" style="text-align: center;"> {{user.email}}</p>
@@ -27,7 +27,7 @@
                     <h5> Yechgan testlaringiz: {{number_of_checktests}} ta</h5>
                 </div>
                 {% if user == request.user %}
-                    <a class="btn btn-warning mt-2" href="#">Tahrirlash</a>
+                    <a class="btn btn-warning mt-2" href="{% url 'update_user' request.user.id %}">Tahrirlash</a>
                 {% endif %}
 
             </div>
@@ -39,13 +39,11 @@
                     <h3>Mening Natijalarim</h3>
                 </div>
                 <div class="card-body">
-                    <h4>Sizning testlaringiz</h4>
                     <ol class="list-group list-group">
                         {% for test in solved_tests %}
 
                             <a style="text-decoration: none;" href="{% url 'checktest' test.id %}">
                                 {% if test.is_passed %}
-
                                     <li style="background-color: rgba(40, 128, 16, 0.499);" class="list-group-item">
                                         <div class="ms-2 me-auto">
                                             <div class="fw-bold">

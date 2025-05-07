@@ -15,12 +15,18 @@
                 <h3>Test Yaratish</h3>
             </div>
             <div class="card-body">
-                <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
-                    {{form|crispy}}
-                    <button class="btn btn-primary" type="submit">Yuborish</button>
-                    <a href="{% url 'index' %}" class="btn btn-secondary">Barcha testlar</a>
-                </form>
+                {% if number_of_category %}
+
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{form|crispy}}
+                        <button class="btn btn-success" type="submit">Yuborish</button>
+                        <a href="{% url 'index' %}" class="btn btn-primary">Barcha testlar</a>
+                    </form>
+                {% else %}
+                    <p style="font-size: 17px;">Keling oldin kategoriya yaratib olamiz! 😊</p>
+                    <a href="{% url 'create_category' %} " class="btn btn-primary">Kategoriya Yaratish</a>
+                {% endif %}
             </div>
         </div>
     </div>

@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import UserCreationForm
 
-from .models import Test, Questions
+from .models import Test, Questions, Category
 
 User = get_user_model()
 
@@ -48,6 +48,23 @@ class CustomUserCreationForm(UserCreationForm):
         }
 
 
+class UpdateUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['username',  'first_name', 'last_name', 'email']
+
+
+class CategoryForm(forms.ModelForm):
+    class Meta:
+        model = Category
+        fields = ['name']
+        widgets = {
+            'name': forms.TextInput(),
+        }
+
+    yuborish_va_chiqish = forms.BooleanField(required=False, help_text="Boshqa kategoriya yaratmasangiz belgilang!")
+
+
 class TestForm(forms.ModelForm):
     class Meta:
         model = Test
@@ -58,6 +75,11 @@ class TestForm(forms.ModelForm):
         test.author = request.user
         super().save(commit)
         return test.id
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user')  # foydalanuvchini olish
+        super().__init__(*args, **kwargs)
+        self.fields['category'].queryset = Category.objects.filter(author=user)  # query ni o'zgartirish
 
 
 class QuestionForm(forms.ModelForm):
@@ -72,3 +94,5 @@ class QuestionForm(forms.ModelForm):
         question.test = Test.objects.filter(pk=test_id).first()
         super().save(commit)
         return question
+
+

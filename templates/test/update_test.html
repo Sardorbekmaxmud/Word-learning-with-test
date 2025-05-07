@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %} Testni Tahrirlash {% endblock %}
+
+{% block background_image %}
+    background-image: url('https://i.pinimg.com/originals/b4/23/7b/b4237bf7af83a3e5d58a78901a7c445c.jpg');
+{% endblock %}
+
+
+{% block content %}
+    <div style="opacity: 85%" class="container mt-5">
+        <div class="card mt-5">
+            <div class="card-header">
+                <h3>Testni Tahrirlash</h3>
+            </div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    {{form|crispy}}
+                    <button class="btn btn-primary" type="submit">Yuborish</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock %}

@@ -6,9 +6,9 @@ from .models import Category, Test, Questions, CheckTest, CheckQuestion
 # Register your models here.
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ('name',)
-    list_filter = ('name',)
-    search_fields = ('name',)
+    list_display = ('author__username', 'name',)
+    list_filter = ('author__username', 'name',)
+    search_fields = ('author__username', 'name',)
     ordering = ('name',)
 
 

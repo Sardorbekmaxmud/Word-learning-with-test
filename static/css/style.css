@@ -1,0 +1,37 @@
+/* Faqat mobil rejimda (max-width: 768px) matnni qisqartirish */
+@media (max-width: 768px) {
+    .test-title, .test-category {
+        display: -webkit-box;
+        -webkit-line-clamp: 1; /* 1 qatorga qisqartirish */
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        max-width: 170px; /* Matnni qisqartirish uchun maksimal uzunlik */
+    }
+}
+
+/* button larni aylantirish */
+.box2 {
+  border-radius: 10px;
+  transition: transform 0.5s ease;
+}
+
+.box2:hover {
+  transform: rotate(360deg);
+}
+
+/* font family  */
+.mulish-<uniquifier> {
+  font-family: "Mulish", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+}
+
+.playwrite-dk-loopet-<uniquifier> {
+  font-family: "Playwrite DK Loopet", cursive;
+  font-optical-sizing: auto;
+  font-weight: <weight>;
+  font-style: normal;
+}
+

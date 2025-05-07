@@ -1,3 +1,4 @@
+from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404
 from django.contrib.auth import logout
@@ -7,8 +8,8 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 
-from .forms import CustomUserCreationForm, TestForm, QuestionForm
-from .models import Test, Questions, CheckQuestion, CheckTest
+from .forms import CustomUserCreationForm, TestForm, QuestionForm, CategoryForm, UpdateUserForm
+from .models import Test, Questions, CheckQuestion, CheckTest, Category
 
 User = get_user_model()
 
@@ -34,13 +35,18 @@ def logout_(reqeust):
 @login_required_decorator
 def index(request):
     queryset = Test.objects.filter(author=request.user)
-    return render(request=request, template_name='test/index.html', context={'tests': queryset})
+    # queryset = Test.objects.filter(author=request.user).annotate(question_count=Count('questions'))
+
+    context = {
+        'tests': queryset,
+    }
+    return render(request=request, template_name='test/index.html', context=context)
 
 
 @login_required_decorator
 def detail(request, test_id):
     queryset = get_object_or_404(Test, pk=test_id)
-    total_questions = len(Questions.objects.filter(test=queryset))
+    total_questions = Questions.objects.filter(test=queryset).count()
     return render(request=request, template_name='test/detail.html',
                   context={'test': queryset, 'total_questions': total_questions})
 
@@ -85,19 +91,48 @@ def checktest(request, checktest_id):
 
 
 @login_required_decorator
-def create_test(request):
-    form = TestForm()
+def create_category(request):
+    form = CategoryForm()
 
     if request.method == "POST":
-        form = TestForm(data=request.POST)
+        form = CategoryForm(data=request.POST)
+
+        if form.is_valid():
+            category = form.save(commit=False)
+            category.author = request.user
+            category.save()
+
+            if form.cleaned_data['yuborish_va_chiqish']:
+                return redirect('create_test')
+            return redirect('create_category')
+
+    context = {
+        'form': form,
+    }
+
+    return render(request=request, template_name='test/create_category.html', context=context)
+
+
+@login_required_decorator
+def create_test(request):
+    form = TestForm(user=request.user)
+    number_of_category = Category.objects.filter(author=request.user).count()
+
+    if request.method == "POST":
+        form = TestForm(data=request.POST, user=request.user)
 
         if form.is_valid():
             test_id = form.save(request=request)
             return redirect('create_question', test_id)
 
+    context = {
+        'form': form,
+        'number_of_category': number_of_category,
+    }
+
     return render(request=request,
                   template_name='test/create_test.html',
-                  context={'form': form})
+                  context=context)
 
 
 @login_required_decorator
@@ -125,6 +160,42 @@ def create_question(request, test_id):
 
 
 @login_required_decorator
+def update_test(request, test_id):
+    test_queryset = get_object_or_404(Test, pk=test_id)
+    form = TestForm(user=request.user, instance=test_queryset)
+
+    if request.method == "POST":
+        form = TestForm(data=request.POST, user=request.user, instance=test_queryset)
+
+        if form.is_valid():
+            form.save(request)
+            return redirect('detail', test_id)
+
+    return render(request=request, template_name='test/update_test.html', context={'form': form})
+
+
+@login_required_decorator
+def update_question(request, test_id, question_id):
+    form = QuestionForm(instance=question_id)
+
+    if request.method == "POST":
+        form = TestForm(data=request.POST, instance=question_id)
+
+        if form.is_valid():
+            form.save(request)
+            return redirect('detail', test_id)
+
+    return render(request=request, template_name='test/update_question.html', context={'form': form})
+
+
+@login_required_decorator
+def delete_test(request, test_id):
+    test_ = get_object_or_404(Test, pk=test_id)
+    test_.delete()
+    return redirect('index')
+
+
+@login_required_decorator
 def profile(request, user_id):
     user = User.objects.filter(username=request.user).first()
     check_tests = CheckTest.objects.filter(solver=user_id)
@@ -139,3 +210,21 @@ def profile(request, user_id):
     }
 
     return render(request=request, template_name='user/profile.html', context=context)
+
+
+@login_required_decorator
+def update_user(request, user_id):
+    form = UpdateUserForm(instance=request.user)
+
+    if request.method == "POST":
+        form = UpdateUserForm(data=request.POST, instance=request.user)
+
+        if form.is_valid():
+            form.save()
+            return redirect('profile', user_id)
+
+    context = {
+        'form': form,
+    }
+
+    return render(request=request, template_name='user/update_user.html', context=context)

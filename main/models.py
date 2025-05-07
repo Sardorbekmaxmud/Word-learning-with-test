@@ -6,7 +6,8 @@ User = get_user_model()
 
 # Create your models here.
 class Category(models.Model):
-    name = models.CharField(max_length=150, null=False, blank=False)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, null=False, blank=False)
+    name = models.CharField(max_length=150, null=False, blank=False, help_text="Nomi")
 
     def __str__(self):
         return self.name
@@ -21,9 +22,9 @@ class Category(models.Model):
 
 class Test(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200, null=False, blank=False)
-    pass_percentage = models.PositiveBigIntegerField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, help_text="Test turini tanlang")
+    title = models.CharField(max_length=200, null=False, blank=False, help_text='Test nomi')
+    pass_percentage = models.PositiveBigIntegerField(help_text="O'tish foizi")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
@@ -45,12 +46,12 @@ class Questions(models.Model):
         ('d', 'D'),
     ]
 
-    test = models.ForeignKey(Test, on_delete=models.CASCADE)
-    title = models.CharField(max_length=250, null=False, blank=False)
-    a = models.CharField(max_length=150, null=False, blank=False)
-    b = models.CharField(max_length=150, null=False, blank=False)
-    c = models.CharField(max_length=150, null=False, blank=False)
-    d = models.CharField(max_length=150, null=False, blank=False)
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='questions')
+    title = models.CharField(max_length=250, null=False, blank=False, help_text='Savol nomi')
+    a = models.CharField(max_length=150, null=False, blank=False, help_text='Variant A')
+    b = models.CharField(max_length=150, null=False, blank=False, help_text='Variant B')
+    c = models.CharField(max_length=150, null=False, blank=False, help_text='Variant C')
+    d = models.CharField(max_length=150, null=False, blank=False, help_text='Variant D')
     true_option = models.CharField(max_length=2, choices=STATUS_CHOICES, null=False, blank=False,
                                    help_text="To'g'ri variantni tanlang!")
     created_at = models.DateTimeField(auto_now_add=True)
