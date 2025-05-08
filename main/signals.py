@@ -5,16 +5,16 @@ from .models import CheckQuestion
 
 @receiver(post_save, sender=CheckQuestion)
 def check_test(sender, instance, *args, **kwargs):
-    check_test = instance.test
-    check_test.true_answers = CheckQuestion.objects.filter(test=check_test, is_true=True).count()
+    check_test_ = instance.test
+    check_test_.true_answers = CheckQuestion.objects.filter(test=check_test_, is_true=True).count()
 
     try:
-        check_test.percentage = check_test.true_answers * 100 // CheckQuestion.objects.filter(test=check_test).count()
+        check_test_.percentage = check_test_.true_answers * 100 // CheckQuestion.objects.filter(test=check_test_).count()
 
-        if check_test.test.pass_percentage <= check_test.percentage:
-            check_test.is_passed = True
+        if check_test_.test.pass_percentage <= check_test_.percentage:
+            check_test_.is_passed = True
         else:
-            check_test.is_passed = False
+            check_test_.is_passed = False
     except Exception as e:
         print("Xatolik: ", e)
 

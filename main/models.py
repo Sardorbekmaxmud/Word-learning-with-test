@@ -21,10 +21,10 @@ class Category(models.Model):
 
 
 class Test(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE, related_name='test')
     category = models.ForeignKey(Category, on_delete=models.CASCADE, help_text="Test turini tanlang")
     title = models.CharField(max_length=200, null=False, blank=False, help_text='Test nomi')
-    pass_percentage = models.PositiveBigIntegerField(help_text="O'tish foizi")
+    pass_percentage = models.PositiveBigIntegerField(null=True, blank=True, help_text="O'tish foizi")
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

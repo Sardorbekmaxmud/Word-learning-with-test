@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 
-from .forms import CustomUserCreationForm, TestForm, QuestionForm, CategoryForm, UpdateUserForm
+from .forms import CustomUserCreationForm, TestForm, QuestionForm, CategoryForm, UpdateUserForm, QuestionsFormSet
 from .models import Test, Questions, CheckQuestion, CheckTest, Category
 
 User = get_user_model()
@@ -41,6 +41,16 @@ def index(request):
         'tests': queryset,
     }
     return render(request=request, template_name='test/index.html', context=context)
+
+
+@login_required_decorator
+def all_categories(request):
+    categories = Category.objects.filter(author=request.user)
+
+    context = {
+        'categories': categories,
+    }
+    return render(request=request, template_name='test/category_list.html', context=context)
 
 
 @login_required_decorator
@@ -92,10 +102,10 @@ def checktest(request, checktest_id):
 
 @login_required_decorator
 def create_category(request):
-    form = CategoryForm()
+    form = CategoryForm(creating=True)
 
     if request.method == "POST":
-        form = CategoryForm(data=request.POST)
+        form = CategoryForm(data=request.POST or None, creating=True)
 
         if form.is_valid():
             category = form.save(commit=False)
@@ -103,7 +113,7 @@ def create_category(request):
             category.save()
 
             if form.cleaned_data['yuborish_va_chiqish']:
-                return redirect('create_test')
+                return redirect('category_list')
             return redirect('create_category')
 
     context = {
@@ -146,9 +156,19 @@ def create_question(request, test_id):
             form = QuestionForm(data=request.POST)
 
             if form.is_valid():
+                form_data_length = form.cleaned_data
+                print(form_data_length)
+
                 form.save(test_id)
 
-                if form.cleaned_data['submit_and_exit']:
+                questions_of_test = Questions.objects.filter(test=test_id).count()
+                if questions_of_test:
+                    queryset_test.pass_percentage = ((questions_of_test - 1) * 100) // questions_of_test
+                else:
+                    queryset_test.pass_percentage = 0
+                queryset_test.save()
+
+                if form.cleaned_data['yuborish_va_chiqish']:
                     return redirect('index')
                 return redirect('create_question', test_id)
 
@@ -160,32 +180,42 @@ def create_question(request, test_id):
 
 
 @login_required_decorator
-def update_test(request, test_id):
-    test_queryset = get_object_or_404(Test, pk=test_id)
-    form = TestForm(user=request.user, instance=test_queryset)
+def update_category(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    form = CategoryForm(instance=category, creating=False)
 
     if request.method == "POST":
-        form = TestForm(data=request.POST, user=request.user, instance=test_queryset)
+        form = CategoryForm(data=request.POST or None, instance=category, creating=False)
 
         if form.is_valid():
-            form.save(request)
-            return redirect('detail', test_id)
+            form.save()
+            return redirect('category_list')
 
-    return render(request=request, template_name='test/update_test.html', context={'form': form})
+    return render(request=request, template_name='test/update_category.html', context={'form': form})
 
 
 @login_required_decorator
-def update_question(request, test_id, question_id):
-    form = QuestionForm(instance=question_id)
+def update_test(request, test_id):
+    test_ = get_object_or_404(Test, pk=test_id)
+    prefix = 'questions'
 
     if request.method == "POST":
-        form = TestForm(data=request.POST, instance=question_id)
+        form = TestForm(data=request.POST, user=request.user, instance=test_)
+        formset = QuestionsFormSet(request.POST, instance=test_, prefix=prefix)
 
-        if form.is_valid():
+        if form.is_valid() and formset.is_valid():
             form.save(request)
+            formset.save()
             return redirect('detail', test_id)
+    else:
+        form = TestForm(user=request.user, instance=test_)
+        formset = QuestionsFormSet(instance=test_, prefix=prefix)
 
-    return render(request=request, template_name='test/update_question.html', context={'form': form})
+    return render(request=request, template_name='test/update_test.html', context={
+        'form': form,
+        'formset': formset,
+        'formset_prefix': prefix,
+    })
 
 
 @login_required_decorator
@@ -193,6 +223,13 @@ def delete_test(request, test_id):
     test_ = get_object_or_404(Test, pk=test_id)
     test_.delete()
     return redirect('index')
+
+
+@login_required_decorator
+def delete_category(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    category.delete()
+    return redirect('category_list')
 
 
 @login_required_decorator

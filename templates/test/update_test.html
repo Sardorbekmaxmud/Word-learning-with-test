@@ -16,11 +16,65 @@
             </div>
             <div class="card-body">
                 <form method="post" enctype="multipart/form-data">
-                    {% csrf_token %}
+                  {% csrf_token %}
+                  <!-- 🔷 TEST FORM -->
+                  <div style="border: 2px solid #007bff; padding: 20px; margin-bottom: 30px;">
+                    <h3>Test ma'lumotlari</h3>
                     {{form|crispy}}
-                    <button class="btn btn-primary" type="submit">Yuborish</button>
+                  </div>
+
+                  <!-- 🔶 SAVOLLAR (QUESTIONS) -->
+                  <div style="border: 2px solid green; padding: 20px;">
+                    <h3>Savollar</h3>
+
+                    {{ formset.management_form }}
+
+                    <div id="formset-area">
+                      {% for form in formset %}
+                        <div class="question-form" style="border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
+                            <strong>Savol {{ forloop.counter }}:</strong>
+                            <br><br>
+                            {{ form|crispy }}
+                        </div>
+                      {% endfor %}
+                    </div>
+
+                    <!-- 🔘 Qo‘shish tugmasi -->
+                    <button class="btn btn-success" type="button" id="add-form">+ Yangi savol qo‘shish</button>
+                  </div>
+
+                  <br>
+                  <button class="btn btn-primary" type="submit">Saqlash</button>
+
+                  <!-- 🔒 Bo‘sh form yashirincha -->
+                  <div id="empty-form-template" style="display: none; border: 1px solid #ccc; padding: 10px; margin-bottom: 15px;">
+                    <br><br>
+                    {{ formset.empty_form|crispy }}
+                  </div>
+
                 </form>
             </div>
         </div>
     </div>
+
+    <!-- JS -->
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const prefix = "{{ formset_prefix }}"; // ya'ni 'questions'
+        const totalForms = document.getElementById(`id_${prefix}-TOTAL_FORMS`);
+        const formsetArea = document.getElementById("formset-area");
+        const emptyFormHtml = document.getElementById("empty-form-template").innerHTML;
+
+        document.getElementById("add-form").addEventListener("click", function () {
+          const formIndex = parseInt(totalForms.value);
+          const newFormHtml = emptyFormHtml.replace(/__prefix__/g, formIndex);
+          const container = document.createElement("div");
+          container.classList.add("question-form");
+          container.innerHTML = newFormHtml;
+          formsetArea.appendChild(container);
+          totalForms.value = formIndex + 1;
+        });
+      });
+    </script>
+
 {% endblock %}

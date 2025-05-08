@@ -64,6 +64,13 @@ class CategoryForm(forms.ModelForm):
 
     yuborish_va_chiqish = forms.BooleanField(required=False, help_text="Boshqa kategoriya yaratmasangiz belgilang!")
 
+    def __init__(self, *args, **kwargs):
+        creating = kwargs.pop('creating', False)  # qo‘shimcha signal
+        super().__init__(*args, **kwargs)
+
+        if not creating:
+            self.fields.pop('yuborish_va_chiqish')  # yangilashda yo‘qotish
+
 
 class TestForm(forms.ModelForm):
     class Meta:
@@ -87,7 +94,7 @@ class QuestionForm(forms.ModelForm):
         model = Questions
         fields = ['title', 'a', 'b', 'c', 'd', 'true_option']
 
-    submit_and_exit = forms.BooleanField(required=False)
+    yuborish_va_chiqish = forms.BooleanField(required=False, help_text="Boshqa savol yaratmasangiz belgilang!")
 
     def save(self, test_id, commit=True):
         question = self.instance
@@ -96,3 +103,9 @@ class QuestionForm(forms.ModelForm):
         return question
 
 
+QuestionsFormSet = forms.inlineformset_factory(
+    Test, Questions,
+    fields="__all__",
+    extra=1,  # 1 bo‘sh form ko‘rsatish uchun
+    can_delete=True  # delete qilishni qo'shish uchun
+)

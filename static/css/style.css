@@ -1,3 +1,23 @@
+body {
+  background-blend-mode: multiply;
+}
+
+body.dark-mode {
+  background-color: #080808;
+  color: white;
+}
+.navbar {
+  background-color: rgba(225, 235, 233, 0.5);
+  backdrop-filter: blur(7px); /* Orqa fonni biroz xiralashtiramiz */
+  overflow: visible !important;
+  position: relative;
+  z-index: 1030;
+}
+.navbar.dark-mode {
+  background-color: rgba(33, 37, 36, 0.5) !important;
+  backdrop-filter: blur(7px) !important;
+}
+
 /* Faqat mobil rejimda (max-width: 768px) matnni qisqartirish */
 @media (max-width: 768px) {
     .test-title, .test-category {
@@ -9,6 +29,13 @@
         max-width: 170px; /* Matnni qisqartirish uchun maksimal uzunlik */
     }
 }
+
+.dropdown-menu {
+  position: absolute !important;
+  z-index: 2000 !important;
+}
+
+
 
 /* button larni aylantirish */
 .box2 {

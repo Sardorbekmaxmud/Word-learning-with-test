@@ -1,12 +1,13 @@
 from .signals import check_test, check_question
 from django.urls import path
-from .views import (index, detail, test, checktest,
+from .views import (index, all_categories, detail, test, checktest,
                     create_category, create_test, create_question,
-                    profile, update_user, update_test, delete_test)
+                    profile, update_user, update_test, delete_test, delete_category, update_category, )
 
 urlpatterns = [
     # other urls
     path('', index, name='index'),
+    path('category_list/', all_categories, name='category_list'),
 
     # test urls
     path('test/<int:test_id>/detail/', detail, name='detail'),
@@ -19,8 +20,10 @@ urlpatterns = [
     path('test/<int:test_id>/create_question/', create_question, name='create_question'),
 
     path('test/<int:test_id>/update/', update_test, name='update_test'),
+    path('test/category/<int:category_id>/update/', update_category, name='update_category'),
 
     path('test/<int:test_id>/delete/', delete_test, name='delete_test'),
+    path('test/category/<int:category_id>/delete/', delete_category, name='delete_category'),
 
     # user
     path('profile/<int:user_id>/', profile, name='profile'),
