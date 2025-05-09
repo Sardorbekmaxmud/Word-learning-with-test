@@ -51,7 +51,7 @@ class CustomUserCreationForm(UserCreationForm):
 class UpdateUserForm(forms.ModelForm):
     class Meta:
         model = User
-        fields = ['username',  'first_name', 'last_name', 'email']
+        fields = ['username', 'first_name', 'last_name', 'email']
 
 
 class CategoryForm(forms.ModelForm):
@@ -76,12 +76,15 @@ class TestForm(forms.ModelForm):
     class Meta:
         model = Test
         fields = ['category', 'title', 'pass_percentage']
+        help_texts = {
+            'pass_percentage': "Kiritmasangiz, avtomatik to'ldiriladi. 1-savol: 100%, 1 < bo'lsa, 1 xato qilish mumkin holatida.",
+        }
 
     def save(self, request, commit=True):
         test = self.instance
         test.author = request.user
         super().save(commit)
-        return test.id
+        return test
 
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user')  # foydalanuvchini olish
@@ -93,8 +96,6 @@ class QuestionForm(forms.ModelForm):
     class Meta:
         model = Questions
         fields = ['title', 'a', 'b', 'c', 'd', 'true_option']
-
-    yuborish_va_chiqish = forms.BooleanField(required=False, help_text="Boshqa savol yaratmasangiz belgilang!")
 
     def save(self, test_id, commit=True):
         question = self.instance
@@ -108,4 +109,11 @@ QuestionsFormSet = forms.inlineformset_factory(
     fields="__all__",
     extra=1,  # 1 bo‘sh form ko‘rsatish uchun
     can_delete=True  # delete qilishni qo'shish uchun
+)
+
+QuestionsCreateFormSet = forms.inlineformset_factory(
+    Test, Questions,
+    fields="__all__",
+    extra=1,  # 1 bo‘sh form ko‘rsatish uchun
+    can_delete=False
 )

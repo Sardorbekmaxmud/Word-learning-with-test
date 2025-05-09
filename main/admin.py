@@ -29,7 +29,7 @@ class TestAdmin(admin.ModelAdmin):
 @admin.register(Questions)
 class QuestionsAdmin(admin.ModelAdmin):
     list_display = ('test__title', 'title', 'a', 'b', 'c', 'd', 'true_option', 'created_at')
-    list_filter = ('title',)
+    list_filter = ('test__title', 'title')
     search_fields = ('test__title', 'title',)
     ordering = ('created_at', 'true_option')
     readonly_fields = ['created_at']

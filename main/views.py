@@ -8,7 +8,8 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib.auth import get_user_model
 
-from .forms import CustomUserCreationForm, TestForm, QuestionForm, CategoryForm, UpdateUserForm, QuestionsFormSet
+from .forms import CustomUserCreationForm, TestForm, QuestionForm, CategoryForm, UpdateUserForm, QuestionsFormSet, \
+    QuestionsCreateFormSet
 from .models import Test, Questions, CheckQuestion, CheckTest, Category
 
 User = get_user_model()
@@ -125,58 +126,46 @@ def create_category(request):
 
 @login_required_decorator
 def create_test(request):
-    form = TestForm(user=request.user)
+    prefix = 'questions'
     number_of_category = Category.objects.filter(author=request.user).count()
 
     if request.method == "POST":
         form = TestForm(data=request.POST, user=request.user)
+        formset = QuestionsCreateFormSet(request.POST, prefix=prefix)
 
         if form.is_valid():
-            test_id = form.save(request=request)
-            return redirect('create_question', test_id)
+            test_ = form.save(request=request, commit=False)
+            test_.save()
+
+            formset.instance = test_
+            formset.save()
+
+            # Savollarga qarab avtomatik o'tish foizini belgilash
+            questions_of_test = Questions.objects.filter(test=test_).count()
+            if questions_of_test and int(test_.pass_percentage) == 0:
+                if questions_of_test > 1:
+                    test_.pass_percentage = ((questions_of_test - 1) * 100) // questions_of_test
+                else:
+                    test_.pass_percentage = 100
+
+            test_.save()
+
+            return redirect('index')
+
+    else:
+        form = TestForm(user=request.user)
+        formset = QuestionsCreateFormSet(prefix=prefix)
 
     context = {
         'form': form,
+        'formset': formset,
+        'formset_prefix': prefix,
         'number_of_category': number_of_category,
     }
 
     return render(request=request,
                   template_name='test/create_test.html',
                   context=context)
-
-
-@login_required_decorator
-def create_question(request, test_id):
-    queryset_test = get_object_or_404(Test, pk=test_id)
-
-    if queryset_test.author == request.user:
-        form = QuestionForm()
-
-        if request.method == "POST":
-            form = QuestionForm(data=request.POST)
-
-            if form.is_valid():
-                form_data_length = form.cleaned_data
-                print(form_data_length)
-
-                form.save(test_id)
-
-                questions_of_test = Questions.objects.filter(test=test_id).count()
-                if questions_of_test:
-                    queryset_test.pass_percentage = ((questions_of_test - 1) * 100) // questions_of_test
-                else:
-                    queryset_test.pass_percentage = 0
-                queryset_test.save()
-
-                if form.cleaned_data['yuborish_va_chiqish']:
-                    return redirect('index')
-                return redirect('create_question', test_id)
-
-        return render(request=request,
-                      template_name='test/create_question.html',
-                      context={'form': form, 'test': queryset_test})
-    else:
-        return HttpResponse("Sizga ruxsat yo'q! Negaki, siz testni egasi emassiz!")
 
 
 @login_required_decorator
@@ -206,6 +195,17 @@ def update_test(request, test_id):
         if form.is_valid() and formset.is_valid():
             form.save(request)
             formset.save()
+
+            # Savollarga qarab avtomatik o'tish foizini belgilash
+            questions_of_test = Questions.objects.filter(test=test_).count()
+            if questions_of_test and int(test_.pass_percentage) == 0:
+                if questions_of_test > 1:
+                    test_.pass_percentage = ((questions_of_test - 1) * 100) // questions_of_test
+                else:
+                    test_.pass_percentage = 100
+
+            test_.save()
+
             return redirect('detail', test_id)
     else:
         form = TestForm(user=request.user, instance=test_)
