@@ -1,10 +1,10 @@
 from .signals import check_test, check_question
 from django.urls import path
-from .views import (index, all_categories, detail, test, checktest,
-                    create_category, create_test,
-                    profile, update_user,
-                    update_test, update_category,
-                    delete_test, delete_category,)
+
+from user.views import profile, update_user
+from main.views import (index, all_categories, detail, test, checktest,
+                        create_category, create_test, update_test,
+                        update_category, delete_test, delete_category,)
 
 urlpatterns = [
     # other urls

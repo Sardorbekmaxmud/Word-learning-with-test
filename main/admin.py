@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Test, Questions, CheckTest, CheckQuestion
+from main.models import Category, Test, Questions, CheckTest, CheckQuestion
 
 
 # Register your models here.
@@ -18,7 +18,7 @@ class QuestionsInline(admin.TabularInline):
 
 @admin.register(Test)
 class TestAdmin(admin.ModelAdmin):
-    inlines = [QuestionsInline,]
+    inlines = [QuestionsInline, ]
     list_display = ('author__username', 'category__name', 'title', 'pass_percentage', 'created_at',)
     list_filter = ('author__username', 'category__name', 'title', 'pass_percentage',)
     search_fields = ('author__username', 'category__name', 'title',)
@@ -41,7 +41,7 @@ class CheckQuestionInline(admin.TabularInline):
 
 @admin.register(CheckTest)
 class CheckTestAdmin(admin.ModelAdmin):
-    inlines = [CheckQuestionInline,]
+    inlines = [CheckQuestionInline, ]
     list_display = ('solver__username', 'test__title', 'true_answers', 'percentage', 'is_passed', 'date')
     list_filter = ('solver__username', 'test__title', 'date', 'is_passed')
     search_fields = ('test__title', 'solver__username',)

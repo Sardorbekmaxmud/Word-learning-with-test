@@ -28,6 +28,7 @@ INSTALLED_APPS = [
     "jazzmin",
     'crispy_forms',
     'crispy_bootstrap5',
+    'whitenoise.runserver_nostatic',
 
     # default
     'django.contrib.admin',
@@ -41,6 +42,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',  # whitenoise middleware for staticfiles
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -51,6 +53,10 @@ MIDDLEWARE = [
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 CRISPY_TEMPLATE_PACK = "bootstrap5"
+
+# STATIC
+# ------------------------
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 
 ROOT_URLCONF = 'config.urls'
 
@@ -136,8 +142,6 @@ LOGOUT_URL = 'logout'
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/login/'
 
-# CSRF_TRUSTED_ORIGINS = os.getenv('DOMAINS', '').split(',')
-CSRF_COOKIE_SECURE = True
 
 # LOGGING SETTINGS
 LOGGING = {
@@ -319,3 +323,37 @@ JAZZMIN_UI_TWEAKS = {
         "success": "btn-success",
     },
 }
+
+# CSRF_TRUSTED_ORIGINS = os.getenv('DOMAINS', '').split(',')
+
+MAX_IMAGE_UPLOAD_SIZE = 5242880  # 5MB
+
+# SECURITY
+# ------------------------------------------------------------------------------
+# https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-httponly
+SESSION_COOKIE_HTTPONLY = True
+# https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-httponly
+CSRF_COOKIE_HTTPONLY = True
+# https://docs.djangoproject.com/en/dev/ref/settings/#x-frame-options
+X_FRAME_OPTIONS = "DENY"
+# https://docs.djangoproject.com/en/dev/ref/settings/#site-id
+SITE_ID = 1
+
+# https://docs.djangoproject.com/en/dev/ref/settings/#secure-proxy-ssl-header
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# https://docs.djangoproject.com/en/dev/ref/settings/#secure-ssl-redirect
+SECURE_SSL_REDIRECT = True
+# https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-secure
+SESSION_COOKIE_SECURE = True
+# https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-secure
+CSRF_COOKIE_SECURE = True
+# https://docs.djangoproject.com/en/dev/topics/security/#ssl-https
+# https://docs.djangoproject.com/en/dev/ref/settings/#secure-hsts-seconds
+SECURE_HSTS_SECONDS = 60
+# https://docs.djangoproject.com/en/dev/ref/settings/#secure-hsts-include-subdomains
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+# https://docs.djangoproject.com/en/dev/ref/settings/#secure-hsts-preload
+SECURE_HSTS_PRELOAD = True
+# https://docs.djangoproject.com/en/dev/ref/middleware/#x-content-type-options-nosniff
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
