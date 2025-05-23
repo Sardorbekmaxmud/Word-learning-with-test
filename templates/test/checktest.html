@@ -49,7 +49,7 @@
                     <hr>
                 {% endfor %}
             <a href="{% url 'index' %}" class="btn btn-warning">Barcha testlar</a>
-            <a href="{% url 'profile' %}" class="btn btn-secondary">Mening Natijalarim</a>
+            <a href="{% url 'profile' request.user.id %}" class="btn btn-secondary">Mening Natijalarim</a>
             </div>
         </div>
         <br><br>
